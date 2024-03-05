@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+
+        android:id="@+id/homeFragment"
+
+        android:icon="@drawable/home_icon"
+
+        android:title="Home" />
+
+    <item
+
+        android:id="@+id/favouriteFragment"
+
+        android:icon="@drawable/favorite_icon"
+
+        android:title="Favourite" />
+
+    <item
+
+        android:id="@+id/alarmFragment2"
+
+        android:icon="@drawable/alert_icon"
+
+        android:title="Alarm" />
+
+
+    <item
+
+        android:id="@+id/settingsFragment"
+
+        android:icon="@drawable/settings_icon"
+
+        android:title="Setting" />
+
+</menu>
