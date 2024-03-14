@@ -1,10 +1,11 @@
-package com.example.mvvm.main.view
+package com.example.weatherapp.home.view
 
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.model.ReposatoryInterface
+import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.utils.ApiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.catch
 
 class MyViewModel(var repo : ReposatoryInterface): ViewModel() {
 
-    private val list = MutableStateFlow<ApiState>(ApiState.Loading())
+    private val list = MutableStateFlow<ApiState<WeatherResponse>>(ApiState.Loading())
 
     val listForView  = list.asStateFlow()
     suspend fun getResponseData (lat: String?,
@@ -45,46 +46,4 @@ class MyViewModel(var repo : ReposatoryInterface): ViewModel() {
 
     }
 
-//    : List<ListItem?>? {
-//        return repo.getAllResponseList()
-//    }
-
-  /*  private val list = MutableLiveData<List<ProductsItem>>()
-
-
-    init {
-      //  getRemoteProduct()
-        //getFavProducts()
-    }
-
-    var listData: LiveData<List<ProductsItem>> = list
-
-//   fun getRemoteData
-   fun getFavProducts (){
-       try {
-           viewModelScope.launch (Dispatchers.IO){
-               val res= repo.getFavLocal()
-               withContext(Dispatchers.Main){
-                   list.postValue(res)
-
-               }
-           }
-
-       }
-       catch (ex :Exception ){
-           Log.i("TAG", "getFavProducts: "+ex.localizedMessage)
-       }
-
-   }
-
-
-
-    fun deleteProduct (productsItem: ProductsItem){
-        viewModelScope.launch (Dispatchers.IO){
-            repo.deleteProduct(productsItem)
-            getFavProducts()
-        }
-    }
-
-*/
 }

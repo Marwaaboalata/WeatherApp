@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:layout_margin="16dp"
+    app:strokeWidth="3dp"
+    app:strokeColor="@color/primary">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        >
+
+        <Button
+            android:id="@+id/btn_first_date"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Begin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_second_date"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="End"
+            app:layout_constraintEnd_toEndOf="@+id/btn_first_date"
+            app:layout_constraintStart_toStartOf="@+id/btn_first_date"
+            app:layout_constraintTop_toBottomOf="@+id/btn_first_date" />
+
+        <Button
+            android:id="@+id/btn_set_time"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            app:layout_constraintEnd_toEndOf="@+id/btn_second_date"
+            app:layout_constraintStart_toStartOf="@+id/btn_second_date"
+            app:layout_constraintTop_toBottomOf="@+id/btn_second_date" />
+
+        <TextView
+            android:id="@+id/show_first_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_first_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_first_date"
+            app:layout_constraintTop_toTopOf="@+id/btn_first_date" />
+
+        <TextView
+            android:id="@+id/show_second_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/btn_set_time"
+            app:layout_constraintStart_toStartOf="@+id/show_first_date"
+            app:layout_constraintTop_toTopOf="@+id/btn_second_date" />
+
+        <TextView
+            android:id="@+id/show_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_set_time"
+            app:layout_constraintStart_toStartOf="@+id/show_second_date"
+            app:layout_constraintTop_toTopOf="@+id/btn_set_time" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
+

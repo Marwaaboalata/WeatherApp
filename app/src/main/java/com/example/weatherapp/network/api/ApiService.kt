@@ -2,6 +2,7 @@ package com.example.mvvm.api
 
 
 import com.example.weatherapp.model.WeatherResponse
+import com.example.weatherapp.utils.Constant
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -17,5 +18,5 @@ interface ApiService {
                            @Query("exclude") exclude: String?="minutely",
                            @Query("units") units: String?,
                            @Query("lang") lang: String?,
-                           @Query("appid") appid: String?="f2f9ec409c67b8498f33c2bf4c7fb7e7"): retrofit2.Response<WeatherResponse>
+                           @Query("appid") appid: String?=Constant.Api_Key): retrofit2.Response<WeatherResponse>
                            }

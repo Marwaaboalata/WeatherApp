@@ -2,4 +2,25 @@
     <string name="app_name">Weather </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="zero">0</string>
+    <string name="yes">yes</string>
+    <string name="cancel">cancel</string>
+    <string name="visibility">Visibility</string>
+    <string name="ultra_violet">Ultra_violet</string>
+    <string name="clouds">Clouds</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="fragment_home">fragment_home</string>
+    <string name="fragment_alarm">fragment_alarm</string>
+    <string name="fragment_settings">fragment_settings</string>
+    <string name="fragment_favourite">fragment_favourite</string>
+    <string name="fragment_map">fragment_map</string>
+    <string name="fragmentfavitemview">FragmentFavItemView</string>
+    <string name="arabic">Arabic</string>
+    <string name="english">English</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="kelvin">Kelvin</string>
+
 </resources>

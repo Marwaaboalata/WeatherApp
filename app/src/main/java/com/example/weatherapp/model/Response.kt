@@ -5,12 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Weather")
 data class WeatherResponse(
+
     val alerts: List<Alert>?,
     val current: Current,
     val daily: List<Daily>,
     val hourly: List<Hourly>,
     val lat: Double,
-    @PrimaryKey
     val lon: Double,
     val timezone: String,
     val timezone_offset: Int
@@ -114,3 +114,4 @@ data class Rain(
 data class Snow(
     val `1h`: Double
 )
+

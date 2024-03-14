@@ -8,4 +8,15 @@ interface ReposatoryInterface {
                                     lon: String?,
                                     units: String?,
                                     lang: String?): Flow<WeatherResponse>
+
+    fun getFavWeathers(): Flow<List<FavTable>>
+    suspend fun insertWeather(product: FavTable)
+    suspend fun delete(color: FavTable)
+
+    //Alert
+
+    fun getAlerts(): Flow<List<AlertTable>>
+    suspend fun insertAlert(product: AlertTable)
+    suspend fun deleteAlert(color: AlertTable)
+
 }
