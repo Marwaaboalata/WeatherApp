@@ -219,75 +219,11 @@ class AlarmFragment : Fragment() ,Listener{
         TODO("Not yet implemented")
     }
 /////////
-    private fun checkOverlayPermission() {
-        if (!Settings.canDrawOverlays(requireContext())) {
-            val alertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
-            alertDialogBuilder.setTitle(getString(R.string.weather_alarm))
-                .setMessage(getString(R.string.features))
-                .setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface, i: Int ->
-                    var myIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                    startActivity(myIntent)
-                    dialog.dismiss()
-                }.setNegativeButton(
-                    getString(R.string.cancel)
-                ) { dialog: DialogInterface, i: Int ->
-                    dialog.dismiss()
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                }.show()
-        }
-    }
-
-/*
-    fun alertNotificationOrAlarm(start: DateAlertModel, end: DateAlertModel, type: String) {
-        if(start !=null && end !=null ){
-
-            var startDate = Calendar.getInstance()
-            startDate.set(start.year, start.month, start.day, start.hour, start.minute)
-
-            var endDate = Calendar.getInstance()
-            endDate.set(end.year, end.month, end.day, end.hour, end.minute)
-
-            var diff = (endDate.timeInMillis / 1000L) - (startDate.timeInMillis / 1000L)
-            val inputData = Data.Builder()
-                .putString("title", "Weather")
-                .putString("content", "current weather statue")
-                .putString("typeAlert", type)
-                .build()
-
-            /*  val fireAlertConstraints = Constraints.Builder()
-                  .setRequiresBatteryNotLow(true)
-                  .setRequiredNetworkType(NetworkType.CONNECTED)
-                  .setRequiresCharging(true)
-                  .setRequiresStorageNotLow(true)
-                  .setRequiresDeviceIdle(true)
-                  .build()*/
-
-            val fireAlertConstraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-            val oneTimeWorkRequest = OneTimeWorkRequestBuilder<AlertWorker>()
-                .setInitialDelay(diff, TimeUnit.SECONDS)
-                .setInputData(inputData)
-                .setConstraints(fireAlertConstraints)
-                .build()
-
-            var alertModel=AlertTable((oneTimeWorkRequest.id).toString(),//timeStart.text.toString(),
-                tvTime.text.toString()//,dateStart.text.toString()
-                ,.text.toString())
-            WorkManager.getInstance(requireContext().applicationContext).enqueue(oneTimeWorkRequest)
-            viewmodel.insertAlertModel(alertModel)
-
-        }
-        //   WorkManager.getInstance().cancelWorkById(oneTimeWorkRequest.id)
-
-    }
-
- */
 
 
 }
 
-data class DateAlertModel (var year:Int, var month:Int, var day:Int, var hour:Int, var minute:Int)
+//data class DateAlertModel (var year:Int, var month:Int, var day:Int, var hour:Int, var minute:Int)
 
 /*
 import android.os.Bundle

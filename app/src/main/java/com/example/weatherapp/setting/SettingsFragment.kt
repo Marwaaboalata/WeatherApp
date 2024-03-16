@@ -126,30 +126,6 @@ class SettingsFragment : Fragment() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-    /*
- private fun changeLanguageLocaleTo(lan: String) {
-      val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(lan)
-      AppCompatDelegate.setApplicationLocales(appLocale)
-  }
-
-
-@SuppressLint("ObsoleteSdkInt")
-fun setAppLocale(localeCode: String, context: Context) {
-    val resources = context.resources
-    val dm = resources.displayMetrics
-    val config: Configuration = resources.configuration
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-    {
-        config.setLocale(Locale(localeCode))
-    }
-    else
-    {
-        config.locale = Locale(localeCode)
-    }
-    resources.updateConfiguration(config, dm)
-}
-
-   */
     private fun restartActivity() {
         val intent = requireActivity().intent
         requireActivity().finish()
