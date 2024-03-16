@@ -40,7 +40,10 @@ class FavouriteFragment : Fragment(), Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.addToFavButton.setOnClickListener{
-            findNavController().navigate(R.id.action_favouriteFragment_to_mapFragment)
+            val bundle = bundleOf("fav" to "fav")
+            findNavController().navigate(R.id.action_favouriteFragment_to_mapFragment,bundle)
+
+
         }
 
         val myFactory=

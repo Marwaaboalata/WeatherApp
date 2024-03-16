@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.mvvm.main.view.MyFactory
 import com.example.weatherapp.home.view.MyViewModel
@@ -19,6 +20,8 @@ import com.example.weatherapp.model.FavTable
 import com.example.weatherapp.fav.FavViewModel
 import com.example.weatherapp.model.ReposatoryImp
 import com.example.weatherapp.network.api.RemoteDataSourceImp
+import com.example.weatherapp.utils.PreferenceManager
+import com.example.weatherapp.utils.PreferenceManager.setAppLocationByMap
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -35,7 +38,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var markerPosition: LatLng? = null
     var cityName:String?=null
     lateinit var  geocoder : Geocoder
-
+    lateinit var distenation :String
 
     lateinit var localviewModel: FavViewModel
     lateinit var remoteviewModel: MyViewModel
@@ -49,6 +52,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        distenation=arguments?.get("fav") as String
 
         val myFactory=MyFactory(ReposatoryImp(RemoteDataSourceImp(),LocalDataSourceImp(requireContext())))
         localviewModel = ViewModelProvider(this, myFactory).get(FavViewModel::class.java)
@@ -76,26 +80,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 cityName=getCityName(longitude,latitude)
 
-
-                /*        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                      if (addresses != null) {
-                          if (addresses.isNotEmpty()) {
-                              val address = addresses?.get(0)?.countryName.toString()+", "+addresses?.get(0)?.adminArea//+", "+addresses?.get(0)?.locality
-      //                        val addressLine = address.get(0)//getAddressLine(0)
-                               cityName = address.toString()
-
-                          }}*/
-                 //    setIcon(R.drawable.add_location)
                         setTitle("Add City")
-                        setMessage("Are you sure you want to add ${cityName} to favorite?")
+                        setMessage("Are you sure you want to add ${cityName} ?")
                         setPositiveButton(getString(R.string.yes)) { _: DialogInterface?, _: Int ->
+                            if (distenation=="fav"){
                             localviewModel.insertWeather(FavTable(lat=longitude, lon = longitude,
                                 city=cityName?:"Default1"
 
                             ))
                             view?.let { it1 ->
+
                                 findNavController().navigate(R.id.action_mapFragment_to_favouriteFragment)
+
+                            }}
+                            else {
+                                setAppLocationByMap(requireContext(), longitude.toString(), latitude.toString())
+                                view?.let { it1 ->
+                                    Navigation.findNavController(it1)
+                                        .navigate(R.id.action_mapFragment_to_homeFragment)
+                                }
                             }
+
                         }
                         setNegativeButton(getString(R.string.cancel)) { _, _ ->
                         }.create().show()
@@ -157,7 +162,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         googleMap.setOnMapClickListener { latLng ->
-            // Update marker position
+
             markerPosition = latLng
             updateMarkerPosition(latLng)
         }

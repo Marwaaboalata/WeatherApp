@@ -12,6 +12,7 @@ object PreferenceManager {
     private const val KEY_SELECTED_CITY = "selectedCity"
     private const val KEY_SELECTED_LONG = "selectedLong"
     private const val KEY_SELECTED_LAT = "selectedLat"
+    private const val KEY_SELECTED_LOCATION ="selectedLocation"
 
      var sharedDegree:String ="Default"
     fun saveSelectedLanguage(context: Context, language: String) {
@@ -57,7 +58,8 @@ object PreferenceManager {
     fun getSelectedCity(context: Context): String {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getString(KEY_SELECTED_CITY, "") ?: ""
-    }   fun getSelectedLong(context: Context): Long {
+    }
+    fun getSelectedLong(context: Context): Long {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getLong(KEY_SELECTED_LONG,0) ?: 0
     }   fun getSelectedLat(context: Context): Long {
@@ -69,6 +71,43 @@ object PreferenceManager {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
         return sharedPreferences.getString(KEY_SELECTED_TEMPERATURE_UNIT,Constant.Unit_Celsius) ?: Constant.Unit_Celsius
+    }
+    fun saveSelectedLocation(context: Context, location: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(KEY_SELECTED_LOCATION, location)
+        editor.apply()
+    }
+    fun getSelectedLocation(context: Context): String {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_SELECTED_LOCATION, Constant.LOCATION_GPS) ?: "DEFAULT_LOCATION"
+    }
+    fun setAppLocationByMap(context: Context,long:String,lat:String){
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(Constant.MAP_LON, long)
+        editor.putString(Constant.MAP_LAT, lat)
+        editor.apply()
+    }
+    fun getAppLocationByMap(context: Context): Pair<String?, String?> {
+        val sharedPreferences =
+            context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return Pair(sharedPreferences.getString(Constant.MAP_LON, "not available"),
+            sharedPreferences.getString(Constant.MAP_LAT, "not available"))
+    }
+//
+fun setAppLocationForAlert(context: Context,long:String,lat:String){
+    val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString(Constant.ALERT_LON, long)
+    editor.putString(Constant.ALERT_LAT, lat)
+    editor.apply()
+}
+    fun getAppLocationForAlert(context: Context): Pair<String?, String?> {
+        val sharedPreferences =
+            context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return Pair(sharedPreferences.getString(Constant.ALERT_LON, "not available"),
+            sharedPreferences.getString(Constant.ALERT_LAT, "not available"))
     }
 
 

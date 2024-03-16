@@ -8,15 +8,22 @@ import androidx.room.PrimaryKey
 //                      val time:Long,
 //                      val dateStart:Long, val dateEnd:Long)
 //
+//@Entity(tableName = "alertTable")
+//data class AlertTable(
+//    @PrimaryKey(autoGenerate = true)
+//    var alertID:Int=0,
+//    val startDate: Long,
+//    val endDate: Long ,
+//    val time: Long,
+//  //  val type: String,
+//  //  val placeName: String = "",
+//    val longitude: Double = 0.0,
+//    val latitude: Double = 0.0,
+//)
+
+
 @Entity(tableName = "alertTable")
-data class AlertTable(
-    @PrimaryKey(autoGenerate = true)
-    var alertID:Int=0,
-    val startDate: String,
-    val endDate: Long ,
-    val time: Long,
-    val type: String,
-    val placeName: String = "",
-    val longitude: Double = 0.0,
-    val latitude: Double = 0.0,
-)
+data class AlertTable(@PrimaryKey var id:String,
+                      var timeStart:String
+                      //, val timeEnd:String//, val dateStart:String
+                        , val dateEnd:String)

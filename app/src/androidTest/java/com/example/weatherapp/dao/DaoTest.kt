@@ -44,7 +44,7 @@ class TasksDaoTest {
 
 
     @Test
-    fun InsertById ()= runBlockingTest{
+    fun InsertIntoDao ()= runBlockingTest{
 
         //Given
         val task = FavTable(0,5.5,4.4,"Ism")

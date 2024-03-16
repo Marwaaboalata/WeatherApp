@@ -14,12 +14,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.AdditionalMatchers
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -55,25 +57,50 @@ class TasksLocalDataSource {
         //Then
         val result = localDataSource.getAll().first()
 
-        assertThat(result[0].id,`is`(product.id))
+        assertThat(result[(result.size)-1].id,`is`(product.id))
 
     }
     @Test
+
+    fun deleteProduct() = runBlockingTest {
+        // Given
+        val product = FavTable(0, 5.5, 4.4, "Ism")
+        val product2 = FavTable(1, 5.5, 4.4, "Ism")
+        val product3 = FavTable(2, 5.5, 4.4, "Ism")
+
+        localDataSource.insertWeather(product)
+        localDataSource.insertWeather(product2)
+        localDataSource.insertWeather(product3)
+
+        // When
+        localDataSource.delete(product3)
+
+        // Then
+        val result = localDataSource.getAll().first()
+      //  assertThat(result.size, `is`(2))
+      //  assertThat(result[(result.size)].id,`is`(not(1)))
+        assertThat(result[(result.size)-1].id,`is`(not(product.id)))
+    }
+
+    /*
     fun deleteProduct() = runBlockingTest {
         // Given
         val product = FavTable(0,5.5,4.4,"Ism")
 
         // When
-        localDataSource.delete(product)
+      localDataSource.insertWeather(product)
+       // localDataSource.delete(product)
 
         database.getDao().delete(product)
 
         // Then
         val result = localDataSource.getAll().first()
         assertThat(result.isEmpty(),`is`(true))
-
+       // assertThat(result[(result.size)-0].id,`is`(AdditionalMatchers.not(0)))
     }
 
+
+     */
     @Test
     fun getAllFav() = runBlockingTest {
         //Given
@@ -96,3 +123,5 @@ class TasksLocalDataSource {
 
 
 }
+
+

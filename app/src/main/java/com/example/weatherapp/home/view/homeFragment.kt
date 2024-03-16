@@ -9,13 +9,16 @@ import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
+import android.os.PerformanceHintManager
 import android.provider.Settings
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +32,8 @@ import com.example.weatherapp.network.api.RemoteDataSourceImp
 import com.example.weatherapp.utils.ApiState
 import com.example.weatherapp.utils.Constant
 import com.example.weatherapp.utils.PreferenceManager
+import com.example.weatherapp.utils.PreferenceManager.getAppLocationByMap
+import com.example.weatherapp.utils.PreferenceManager.setAppLocationForAlert
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -58,6 +63,7 @@ class homeFragment : Fragment() {
     lateinit var windTv:TextView
     lateinit var cloudTv:TextView
     lateinit var ultravilotTv:TextView
+    lateinit var progressBar:ProgressBar
 
 
     private  val  PERMISSION_ID=5005
@@ -116,6 +122,8 @@ class homeFragment : Fragment() {
                 when(res){
 
                     is ApiState.Success->{
+                        progressBar.visibility = View.GONE
+
                         Log.i("TAGO", "onViewCreated:long+lat: "+latitude+","+longtude)
                         //    myAdapter.submitList(res.list)
                         val weather=res.data
@@ -133,6 +141,7 @@ class homeFragment : Fragment() {
                     }
 
                     is ApiState.Loading->{
+                        progressBar.visibility = View.VISIBLE
 
 
                         //  Log.i("TAG", "onViewCreated: "+list?.get(0)?.dtTxt)
@@ -154,13 +163,29 @@ class homeFragment : Fragment() {
 
 }
 
-//Enable Location get Lat and Long
+
 
     override fun onResume() {
         super.onResume()
         isLocationRecive =false
+        if (PreferenceManager.getSelectedLocation(requireContext()) == Constant.LOCATION_MAP) {
 
-        getLocation()
+            lifecycleScope.launch {
+            //  myDegree= PreferenceManager.getSelectedTemperatureUnit(requireContext())
+            ///////
+                val pair = getAppLocationByMap(requireContext())
+
+                viewModel.getResponseData(
+                    pair.first, pair.second,
+                    lang = PreferenceManager.getSelectedLanguage(requireContext()),
+                    units = PreferenceManager.getSelectedTemperatureUnit(requireContext())
+                )
+                cityTv.text =getCityName((pair.first as String).toDouble(),(pair.second as String).toDouble())
+                Log.i("TAGO", "onLocationResult: pair"+pair.first.toString())
+               setAppLocationForAlert(requireContext(),pair.first.toString(),pair.second.toString())
+
+            }   } else{
+        getLocation()}
         lifecycleScope.launch {
             viewModel.listForView.collectLatest {
                     res->
@@ -215,6 +240,8 @@ class homeFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         isLocationRecive =false
+        ///
+        getLocation()
     }
 
 
@@ -246,12 +273,32 @@ class homeFragment : Fragment() {
                    isLocationRecive =true
                     lifecycleScope.launch {
                       //  myDegree= PreferenceManager.getSelectedTemperatureUnit(requireContext())
+//                       ///////
+//                        if (PreferenceManager.getSelectedLocation(requireContext()) == Constant.LOCATION_MAP) {
+//                            val pair = getAppLocationByMap(requireContext())
+//
+//                            viewModel.getResponseData(
+//                                pair.first, pair.second,
+//                                lang = PreferenceManager.getSelectedLanguage(requireContext()),
+//                                units = PreferenceManager.getSelectedTemperatureUnit(requireContext())
+//                            )
+//                            Log.i("TAGO", "onLocationResult: pair"+pair.first.toString())
+//
+//                        }    else{
                         viewModel.getResponseData(
                             "${latitude}",
                             "${longtude}",
                             PreferenceManager.getSelectedTemperatureUnit(requireContext()),
                             PreferenceManager.getSelectedLanguage(requireContext())
-                        ) // Call getResponseData to initiate API call
+                        )
+                        setAppLocationForAlert(requireContext(),longtude.toString(),latitude.toString())
+
+                        //}
+
+
+
+                      //  Locale(getLanguageLocale())
+
                     }
                 }
                 Log.i("TAG", "long:from home "+longtude)
@@ -363,6 +410,7 @@ class homeFragment : Fragment() {
         ultravilotTv=view.findViewById(R.id.ultraVio_measure)
         hourlyRecyclerView = view.findViewById(R.id.hourRecycV)
         weaklyRecyclerView = view.findViewById(R.id.weakRecycV)
+        progressBar = view.findViewById(R.id.progressBar)
 
 
 
@@ -374,8 +422,26 @@ class homeFragment : Fragment() {
             return " F°"}
         else if (PreferenceManager.getSelectedTemperatureUnit(context)== Constant.Unit_kelvin){
             return " K°"}
-        else return "def"
+        else return " C°"
+    }
+    fun getLanguageLocale(): String {
+        return AppCompatDelegate.getApplicationLocales().toLanguageTags()
     }
 
+    fun getCityName(longitude: Double, latitude: Double): String {
+        try {
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
+            val theAddress = geocoder.getFromLocation(latitude, longitude, 5)
+            if (theAddress!!.isNotEmpty()) {
+                return theAddress[0]?.adminArea ?: ""
+            } else {
+                return ""
+            }
+        } catch (e: Exception) {
+            Log.e("MapFragmentError", "Error getting city name: ${e.message}")
+            return ""
+        }
+    }
 }
+

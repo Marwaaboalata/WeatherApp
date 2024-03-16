@@ -11,5 +11,11 @@ object Constant {
     const val  Unit_kelvin:String="default"
     const val  Unit_Fahrenheit:String="imperial"
 
+    const val  LOCATION_GPS:String="gps"
+    const val  LOCATION_MAP:String="map"
+    const val  MAP_LON:String="lon"
+    const val  MAP_LAT:String="lat"
 
+    const val  ALERT_LON:String="alertlon"
+    const val  ALERT_LAT:String="alertlat"
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">الطقس</string>
-    <!-- TODO: إزالة أو تغيير هذا النص البديل -->
     <string name="hello_blank_fragment">مرحبًا بك في الشاشة الفارغة</string>
     <string name="zero">٠</string>
     <string name="yes">نعم</string>
@@ -12,15 +11,16 @@
     <string name="wind">الرياح</string>
     <string name="humidity">الرطوبة</string>
     <string name="pressure">الضغط</string>
-    <string name="fragment_home">الصفحة_الرئيسية</string>
-    <string name="fragment_alarm">التنبيه_التذكير</string>
+    <string name="fragment_home">الصفحة الرئيسية</string>
+    <string name="fragment_alarm">التنبيه التذكير</string>
     <string name="fragment_settings">الإعدادات</string>
     <string name="fragment_favourite">المفضلة</string>
     <string name="fragment_map">الخريطة</string>
-    <string name="fragmentfavitemview">عرض_عنصر_المفضلة_المخصص</string>
+    <string name="fragmentfavitemview">عرض عنصر المفضلة المخصص</string>
     <string name="arabic">العربية</string>
     <string name="english">الإنجليزية</string>
     <string name="celsius">درجة مئوية</string>
     <string name="fahrenheit">فهرنهايت</string>
     <string name="kelvin">كلفن</string>
+
 </resources>
