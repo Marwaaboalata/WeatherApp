@@ -23,6 +23,16 @@ interface FavouriteDao {
     suspend fun delete(weather: FavTable)
 
 
+
+    @Query("SELECT * FROM Weather")
+    fun getHomes():Flow<List<WeatherResponse>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHome(weather: WeatherResponse)
+
+
+
+
 }
 
 

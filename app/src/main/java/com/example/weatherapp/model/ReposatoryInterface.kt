@@ -19,4 +19,9 @@ interface ReposatoryInterface {
     suspend fun insertAlert(product: AlertTable)
     suspend fun deleteAlert(color: AlertTable)
 
+    //Home
+
+    fun getHomes(): Flow<List<WeatherResponse>>
+    suspend fun insertHome(product: WeatherResponse)
+
 }

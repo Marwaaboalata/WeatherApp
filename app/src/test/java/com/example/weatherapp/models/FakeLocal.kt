@@ -3,6 +3,7 @@ package com.example.weatherapp.models
 import com.example.weatherapp.db.LocalDataSourceInterface
 import com.example.weatherapp.model.AlertTable
 import com.example.weatherapp.model.FavTable
+import com.example.weatherapp.model.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -31,6 +32,14 @@ class FakeLocal(
     }
 
     override suspend fun deleteAlert(color: AlertTable) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getHomes(): Flow<List<WeatherResponse>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun insertHome(product: WeatherResponse) {
         TODO("Not yet implemented")
     }
 }

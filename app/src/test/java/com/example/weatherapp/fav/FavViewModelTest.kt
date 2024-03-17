@@ -370,7 +370,7 @@ class FavViewModelTest {
         // When
         favViewModel.getFavWeather()
 
-        // Then
+        // when
         var dataList: List<FavTable>? = null
 
         // Wait for the coroutine to complete

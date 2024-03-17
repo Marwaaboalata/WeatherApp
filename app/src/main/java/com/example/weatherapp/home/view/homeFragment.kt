@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Looper
 import android.os.PerformanceHintManager
@@ -18,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +31,7 @@ import com.example.mvvm.main.view.MyFactory
 import com.example.weatherapp.R
 import com.example.weatherapp.db.LocalDataSourceImp
 import com.example.weatherapp.model.ReposatoryImp
+import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.api.RemoteDataSourceImp
 import com.example.weatherapp.utils.ApiState
 import com.example.weatherapp.utils.Constant
@@ -44,6 +48,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 var isLocationRecive = false
+var isNetworkavailable =true
 class homeFragment : Fragment() {
      var longtude:Double=0.0
      var latitude:Double=0.0
@@ -54,7 +59,7 @@ class homeFragment : Fragment() {
     lateinit var linearLayoutManager: LinearLayoutManager
     lateinit var linearLayoutManagerWeak: LinearLayoutManager
 
-
+    lateinit var statusTv:TextView
     lateinit var tempNumTv:TextView
     lateinit var cityTv:TextView
     lateinit var visibilityTv:TextView
@@ -73,8 +78,11 @@ class homeFragment : Fragment() {
 
 
     lateinit var viewModel: MyViewModel
+    //
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isNetworkavailable=isNetworkAvailable(requireContext())
 
     }
 
@@ -90,21 +98,17 @@ class homeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init(view)
 
-
-
         linearLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         hourlyRecyclerView.apply {
             adapter = myHourAdapter
             layoutManager = linearLayoutManager
         }
 
-
         linearLayoutManagerWeak = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         weaklyRecyclerView.apply {
             adapter = myWeakAdapter
             layoutManager = linearLayoutManagerWeak
         }
-
 
         val myFactory = MyFactory(ReposatoryImp(RemoteDataSourceImp(),LocalDataSourceImp(requireContext())))
         viewModel = ViewModelProvider(this, myFactory).get(MyViewModel::class.java)
@@ -114,19 +118,58 @@ class homeFragment : Fragment() {
         if (locationForHome.isintiate){
            viewModel.getResponseData("${locationForHome.lat}","${locationForHome.long}","metric","en")}    // Call getResponseData to initiate API call
         }*/
+        if (!isNetworkAvailable(requireContext())){
+
+                Toast.makeText(requireContext(), "Network not Available", Toast.LENGTH_SHORT).show()
+            Log.i("TAGOO", "onResume:!isNetworkAvailable(requireContext()) ")
+                viewModel.getOflineWeather()
+                lifecycleScope.launch {
+                    viewModel.listData.collectLatest {
+                        when (it) {
+                            is ApiState.Loading ->{
+                                Log.i("TAGOO", "loading: ")
+
+                            }
+
+                            is ApiState.Success -> {
+                                progressBar.visibility = View.GONE
 
 
-        lifecycleScope.launch {
-            viewModel.listForView.collectLatest {
-                    res->
-                when(res){
+                                addDataToUI(it.data.get(0))
+                                Log.i("TAGOO", "onResume: "+it.data.get((it.data.size)-1).lat)
 
-                    is ApiState.Success->{
-                        progressBar.visibility = View.GONE
+                            }
+                            is ApiState.Failur->{
 
-                        Log.i("TAGO", "onViewCreated:long+lat: "+latitude+","+longtude)
-                        //    myAdapter.submitList(res.list)
-                        val weather=res.data
+                                Log.i("TAGOO", "failur: "+it.msg)
+                            }
+
+                            else -> {
+                                Log.i("TAGOO", "EROR: ")
+                            }
+                        }
+
+                }
+//
+            }
+        }
+        else {
+
+            lifecycleScope.launch {
+                viewModel.listForView.collectLatest { res ->
+                    when (res) {
+
+                        is ApiState.Success -> {
+                            progressBar.visibility = View.GONE
+
+                            Log.i("TAGO", "onViewCreated:long+lat: " + latitude + "," + longtude)
+                            //    myAdapter.submitList(res.list)
+                            val weather = res.data
+                            //
+                            viewModel.insertHome(weather)
+                            //
+                            addDataToUI(weather)
+                            /*
                         tempNumTv.text=weather.current.temp.toInt().toString()+" "+getDegree(requireContext())
                         //  Log.i("TAG", "onViewCreated: "+list)
 
@@ -138,26 +181,35 @@ class homeFragment : Fragment() {
                         visibilityTv.text=weather.current.visibility.toString()
                         cloudTv.text=weather.current.clouds.toString()
                         ultravilotTv.text=weather.current.uvi.toString()
-                    }
+                        */
+                        }
 
-                    is ApiState.Loading->{
-                        progressBar.visibility = View.VISIBLE
+                        is ApiState.Loading -> {
+                            progressBar.visibility = View.VISIBLE
 
 
-                        //  Log.i("TAG", "onViewCreated: "+list?.get(0)?.dtTxt)
-                        Log.i("TAG", "onViewCreated: Loaded")
-                    }
-                    is ApiState.Failur->{
-                        Log.i("TAG", "ApiState.Failur: errrrooooooooooooooooooooooooooooooooor")
+                            //  Log.i("TAG", "onViewCreated: "+list?.get(0)?.dtTxt)
+                            Log.i("TAG", "onViewCreated: Loaded")
+                        }
 
-                    }
+                        is ApiState.Failur -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Fail to load Data",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                    else -> {
-                        Log.i("TAG", "onCreate: errrrooooooooooooooooooooooooooooooooor")
+                            Log.i("TAG", "ApiState.Failur: errrrooooooooooooooooooooooooooooooooor")
+
+                        }
+
+                        else -> {
+                            Log.i("TAG", "onCreate: errrrooooooooooooooooooooooooooooooooor")
+                        }
+
                     }
 
                 }
-
             }
         }
 
@@ -167,6 +219,7 @@ class homeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (isNetworkAvailable(requireContext())){
         isLocationRecive =false
         if (PreferenceManager.getSelectedLocation(requireContext()) == Constant.LOCATION_MAP) {
 
@@ -178,7 +231,8 @@ class homeFragment : Fragment() {
                 viewModel.getResponseData(
                     pair.first, pair.second,
                     lang = PreferenceManager.getSelectedLanguage(requireContext()),
-                    units = PreferenceManager.getSelectedTemperatureUnit(requireContext())
+                    units = PreferenceManager.getSelectedTemperatureUnit(requireContext()),
+                    context = requireContext()
                 )
                 cityTv.text =getCityName((pair.first as String).toDouble(),(pair.second as String).toDouble())
                 Log.i("TAGO", "onLocationResult: pair"+pair.first.toString())
@@ -195,17 +249,9 @@ class homeFragment : Fragment() {
                         Log.i("TAGO", "onViewCreated:long+lat: "+latitude+","+longtude)
                         //    myAdapter.submitList(res.list)
                         val weather=res.data
-                        tempNumTv.text=weather.current.temp.toInt().toString()+" "+getDegree(requireContext())
-                        //  Log.i("TAG", "onViewCreated: "+list)
+                        addDataToUI(weather)
+                        viewModel.insertHome(weather)
 
-                        myHourAdapter.submitList(weather.hourly)
-                        myWeakAdapter.submitList(weather.daily)
-                        humitidyTv.text=weather.current.humidity.toString()
-                        presurTv.text=weather.current.pressure.toString()
-                        windTv.text=weather.current.wind_deg.toString()
-                        visibilityTv.text=weather.current.visibility.toString()
-                        cloudTv.text=weather.current.clouds.toString()
-                        ultravilotTv.text=weather.current.uvi.toString()
 
                     }
 
@@ -228,6 +274,29 @@ class homeFragment : Fragment() {
 
             }
         }
+        }
+        else{
+            Toast.makeText(requireContext(), "Network not Available", Toast.LENGTH_SHORT).show()
+
+            lifecycleScope.launch {
+                viewModel.listData.collectLatest {
+                    when (it) {
+                        is ApiState.Loading ->{
+                            //  binding.progressBar.visibility = View.VISIBLE
+                        }
+                        is ApiState.Success -> {
+                            progressBar.visibility = View.GONE
+
+                            addDataToUI(it.data.get((it.data.size)-1))
+                            Log.i("TAGOO", "onResume: "+it.data.get((it.data.size)-1).lat)
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+//
+        }
 
     }
 
@@ -241,7 +310,7 @@ class homeFragment : Fragment() {
         super.onPause()
         isLocationRecive =false
         ///
-        getLocation()
+    //    getLocation()
     }
 
 
@@ -289,7 +358,7 @@ class homeFragment : Fragment() {
                             "${latitude}",
                             "${longtude}",
                             PreferenceManager.getSelectedTemperatureUnit(requireContext()),
-                            PreferenceManager.getSelectedLanguage(requireContext())
+                            PreferenceManager.getSelectedLanguage(requireContext()),requireContext()
                         )
                         setAppLocationForAlert(requireContext(),longtude.toString(),latitude.toString())
 
@@ -400,6 +469,7 @@ class homeFragment : Fragment() {
     //intiate
 
     fun init(view: View){
+        statusTv=view.findViewById(R.id.statusTv)
         tempNumTv=view.findViewById(R.id.tempnumTv)
         cityTv=view.findViewById(R.id.cityTv)
         humitidyTv=view.findViewById(R.id.humidity_measure)
@@ -442,6 +512,30 @@ class homeFragment : Fragment() {
             Log.e("MapFragmentError", "Error getting city name: ${e.message}")
             return ""
         }
+    }
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val networkCapabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+        return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+    }
+
+    fun addDataToUI(weather:WeatherResponse){
+        tempNumTv.text=weather.current.temp.toInt().toString()+" "+getDegree(requireContext())
+        //  Log.i("TAG", "onViewCreated: "+list)
+
+        myHourAdapter.submitList(weather.hourly)
+        myWeakAdapter.submitList(weather.daily)
+        humitidyTv.text=weather.current.humidity.toString()
+        presurTv.text=weather.current.pressure.toString()
+        windTv.text=weather.current.wind_deg.toString()
+        visibilityTv.text=weather.current.visibility.toString()
+        cloudTv.text=weather.current.clouds.toString()
+        ultravilotTv.text=weather.current.uvi.toString()
+        statusTv.text=weather.current.weather[0].description
     }
 }
 

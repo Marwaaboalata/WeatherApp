@@ -9,7 +9,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.example.dayfiveandroidkotlin.FavouriteDataBase
 import com.example.weatherapp.db.LocalDataSourceImp
+import com.example.weatherapp.model.Current
 import com.example.weatherapp.model.FavTable
+import com.example.weatherapp.model.Weather
+import com.example.weatherapp.model.WeatherResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
@@ -119,6 +122,55 @@ class TasksLocalDataSource {
         assertThat(result.size,`is`(3))
 
     }
+    /////Home
+    @Test
+    fun insertHome() = runBlockingTest {
+        //Given
+        val product = FavTable(2,5.5,4.4,"Ism")
+        val remoteSourceResponse = WeatherResponse(
+            listOf(),
+
+            Current(
+
+                0, 0.0, 0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0, listOf<Weather>(), 0, 0.0
+
+            ), listOf(), listOf(), 0.0, 0.0, "", 0
+
+        )
+
+        //when
+        localDataSource.insertHome(remoteSourceResponse)
+        //Then
+        val result = localDataSource.getHomes().first()
+
+        assertThat(result[(result.size)-1].lat,`is`(remoteSourceResponse.lat))
+
+    }
+
+
+    @Test
+    fun getAllHomes() = runBlockingTest {
+        //Given
+        val remoteSourceResponse2 = WeatherResponse(
+            listOf(),
+
+            Current(
+
+                0, 0.0, 0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0, listOf<Weather>(), 0, 0.0
+
+            ), listOf(), listOf(), 1.0, 1.0, "", 0
+
+        )
+        //when
+        localDataSource.insertHome(remoteSourceResponse2)
+        //Then
+        val result = localDataSource.getHomes().first()
+
+       // assertThat(result.size,`is`(1))
+        assertThat(result.isEmpty(),`is`(false))
+
+    }
+
 
 
 

@@ -44,6 +44,14 @@ class ReposatoryImp(var remote :RemoteDataSourceInterface,var local:LocalDataSou
          local.deleteAlert(color)
     }
 
+    override fun getHomes(): Flow<List<WeatherResponse>> {
+        return local.getHomes()
+    }
+
+    override suspend fun insertHome(product: WeatherResponse) {
+        local.insertHome(product)
+    }
+
 
     /*  : List<ListItem?>? {
           Log.i("TAG", "getAllRemoteProducts: "+ (remote.getResponse()?.list?.get(0)?.dt ?: "0000"))

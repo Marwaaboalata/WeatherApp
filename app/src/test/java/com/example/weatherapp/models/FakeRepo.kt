@@ -13,7 +13,7 @@ class FakeRepo : ReposatoryInterface {
 
     var favWeather:MutableList<FavTable>? = mutableListOf(FavTable(0, 5.5, 4.4, "Ism"),FavTable(1, 5.5, 4.4, "Ism"),FavTable(2, 5.5, 4.4, "Ism"))
 
-    var alertsList:List<FavTable> = mutableListOf()
+    var listData:MutableList<WeatherResponse> = mutableListOf()
     val remoteSourceResponse = WeatherResponse(
         listOf(),
 
@@ -60,5 +60,13 @@ class FakeRepo : ReposatoryInterface {
 
     override suspend fun deleteAlert(color: AlertTable) {
         TODO("Not yet implemented")
+    }
+
+    override fun getHomes(): Flow<List<WeatherResponse>> {
+        return flowOf(listData)
+    }
+
+    override suspend fun insertHome(product: WeatherResponse) {
+       listData.add(product)
     }
 }

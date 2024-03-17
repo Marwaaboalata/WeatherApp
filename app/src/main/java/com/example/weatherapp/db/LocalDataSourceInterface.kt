@@ -17,4 +17,10 @@ interface LocalDataSourceInterface {
     suspend fun deleteAlert(color: AlertTable)
 
 
+    //Home
+
+    fun getHomes(): Flow<List<WeatherResponse>>
+    suspend fun insertHome(product: WeatherResponse)
+
+
 }

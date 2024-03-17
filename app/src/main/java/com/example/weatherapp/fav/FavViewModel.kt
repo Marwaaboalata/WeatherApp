@@ -61,6 +61,7 @@ class FavViewModel(var repo : ReposatoryInterface): ViewModel() {
     fun insertWeather (weather: FavTable){
         viewModelScope.launch (Dispatchers.IO){
             repo.insertWeather(weather)
+            getFavWeather()
         }
     }
 

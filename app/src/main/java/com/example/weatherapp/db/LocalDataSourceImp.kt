@@ -35,5 +35,12 @@ class LocalDataSourceImp(var contxt: Context):LocalDataSourceInterface {
     override suspend fun deleteAlert(color: AlertTable) {
             alertDao.deleteAlert(color)    }
 
+    override fun getHomes(): Flow<List<WeatherResponse>> {
+        return weatherDao.getHomes()
+    }
+
+    override suspend fun insertHome(product: WeatherResponse) {
+        weatherDao.insertHome(product)  }
+
 
 }

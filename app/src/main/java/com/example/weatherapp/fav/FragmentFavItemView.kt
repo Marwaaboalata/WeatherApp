@@ -101,7 +101,7 @@ class FragmentFavItemView : Fragment() {
 
            lifecycleScope.launch {
 
-              viewModel.getResponseData("${place.lat}","${place.lon}","metric","en")   // Call getResponseData to initiate API call
+              viewModel.getResponseData("${place.lat}","${place.lon}","metric","en",requireContext())   // Call getResponseData to initiate API call
            }
 
 
